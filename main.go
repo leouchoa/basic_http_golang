@@ -5,18 +5,20 @@ import (
 	"net/http"
 )
 
-func index(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello world :]")
-}
-
-func contact(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "<h1>Contact Info</h1>")
+func helloHandler(w http.ResponseWriter, req *http.Request) {
+	fmt.Fprintf(w, "Hello, you've requested: %s\n", req.URL.Path)
 }
 
 func main() {
-	http.HandleFunc("/", index)
-	http.HandleFunc("/contact", contact)
+	// Define a simple handler function
 
-	fmt.Println("Server is starting...")
-	http.ListenAndServe(":3000", nil)
+	// Register the handler function for a specific route pattern
+	http.HandleFunc("/hello", helloHandler)
+
+	// Start the HTTP server on port 8080
+	fmt.Println("Server is listening on port 8080...")
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		fmt.Printf("Error starting server: %s\n", err)
+	}
 }
