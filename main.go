@@ -9,6 +9,15 @@ import (
 
 var PORT = 8080
 
+type user_data struct {
+	id        uint
+	name      string
+	role      string
+	email     string
+	phone     string
+	contacted bool
+}
+
 var data = map[string]string{
 	"Go":     "A programming language created by Google.",
 	"Gopher": "A software engineer who builds with Go.",
