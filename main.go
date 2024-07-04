@@ -27,7 +27,6 @@ var data = map[string]string{
 
 func helloHandler(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "Hello!")
-	w.WriteHeader(http.StatusOK)
 }
 
 func getData(w http.ResponseWriter, req *http.Request) {
