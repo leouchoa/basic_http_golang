@@ -35,13 +35,21 @@ func getData(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(data)
 }
 
+func displaySingleItem(w http.ResponseWriter, r *http.Request) {
+	productId := r.PathValue("id")
+	fmt.Fprintf(w, "displaying properties for product %s", productId)
+}
+
 func main() {
-	http.HandleFunc("/", helloHandler)
-	http.HandleFunc("/get_data", getData)
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/", helloHandler)
+	mux.HandleFunc("/get_data/{id}", getData)
+	mux.HandleFunc("/product/{id}", displaySingleItem)
 
 	fmt.Println("Server is listening on port " + strconv.Itoa(PORT))
 
-	err := http.ListenAndServe(":"+strconv.Itoa(PORT), nil)
+	err := http.ListenAndServe(":"+strconv.Itoa(PORT), mux)
 	if err != nil {
 		fmt.Printf("Error starting server: %s\n", err)
 	}
