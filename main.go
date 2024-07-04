@@ -46,16 +46,20 @@ func displaySingleItem(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	mux := http.NewServeMux()
+	// https://codewithflash.com/advanced-routing-with-go-122
+	v0Router := http.NewServeMux()
 
-	mux.HandleFunc("/", helloHandler)
-	mux.HandleFunc("GET /get_data/{id}", getData)
-	mux.HandleFunc("GET /get_product/{id}", displaySingleItem)
-	mux.HandleFunc("POST /post_product/{id}", postData)
+	v0Router.HandleFunc("/", helloHandler)
+	v0Router.HandleFunc("GET /get_data/{id}", getData)
+	v0Router.HandleFunc("GET /get_product/{id}", displaySingleItem)
+	v0Router.HandleFunc("POST /post_product/{id}", postData)
+
+	router := http.NewServeMux()
+	router.Handle("/v0/", http.StripPrefix("/v0", v0Router))
 
 	fmt.Println("Server is listening on port " + PORT_STR)
 
-	err := http.ListenAndServe(":"+PORT_STR, mux)
+	err := http.ListenAndServe(":"+PORT_STR, router)
 	if err != nil {
 		fmt.Printf("Error starting server: %s\n", err)
 	}
