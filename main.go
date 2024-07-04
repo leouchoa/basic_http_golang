@@ -10,13 +10,13 @@ import (
 var PORT = 8080
 var PORT_STR = strconv.Itoa(PORT)
 
-type user_data struct {
-	id        uint
-	name      string
-	role      string
-	email     string
-	phone     string
-	contacted bool
+type UserData struct {
+	ID        int    `json:"id"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Email     string `json:"email"`
+	Password  string `json:"-"`
+	Contacted bool   `json:"contacted"`
 }
 
 var data = map[string]string{
@@ -36,8 +36,18 @@ func getData(w http.ResponseWriter, req *http.Request) {
 }
 
 func postData(w http.ResponseWriter, req *http.Request) {
-	productId := req.PathValue("id")
-	fmt.Fprintf(w, "created properties for product %s", productId)
+	var userData UserData
+	err := json.NewDecoder(req.Body).Decode(&userData)
+	if err != nil {
+		http.Error(w, "Failed to decode JSON", http.StatusBadRequest)
+		return
+	}
+
+	// Now you can use userData as needed
+	fmt.Printf("Received data: %+v\n", userData)
+
+	// Respond with a success message
+	fmt.Fprintf(w, "Data received successfully")
 }
 
 func displaySingleItem(w http.ResponseWriter, r *http.Request) {
@@ -46,16 +56,20 @@ func displaySingleItem(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	mux := http.NewServeMux()
+	// https://codewithflash.com/advanced-routing-with-go-122
+	v0Router := http.NewServeMux()
 
-	mux.HandleFunc("/", helloHandler)
-	mux.HandleFunc("GET /get_data/{id}", getData)
-	mux.HandleFunc("GET /get_product/{id}", displaySingleItem)
-	mux.HandleFunc("POST /post_product/{id}", postData)
+	v0Router.HandleFunc("/", helloHandler)
+	v0Router.HandleFunc("GET /get_data/{id}", getData)
+	v0Router.HandleFunc("GET /get_product/{id}", displaySingleItem)
+	v0Router.HandleFunc("POST /post_product/{id}", postData)
+
+	router := http.NewServeMux()
+	router.Handle("/v0/", http.StripPrefix("/v0", v0Router))
 
 	fmt.Println("Server is listening on port " + PORT_STR)
 
-	err := http.ListenAndServe(":"+PORT_STR, mux)
+	err := http.ListenAndServe(":"+PORT_STR, router)
 	if err != nil {
 		fmt.Printf("Error starting server: %s\n", err)
 	}
