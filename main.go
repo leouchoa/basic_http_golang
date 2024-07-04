@@ -36,6 +36,11 @@ func getData(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(data)
 }
 
+func postData(w http.ResponseWriter, req *http.Request) {
+	productId := req.PathValue("id")
+	fmt.Fprintf(w, "created properties for product %s", productId)
+}
+
 func displaySingleItem(w http.ResponseWriter, r *http.Request) {
 	productId := r.PathValue("id")
 	fmt.Fprintf(w, "displaying properties for product %s", productId)
@@ -45,8 +50,9 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", helloHandler)
-	mux.HandleFunc("/get_data/{id}", getData)
-	mux.HandleFunc("/product/{id}", displaySingleItem)
+	mux.HandleFunc("GET /get_data/{id}", getData)
+	mux.HandleFunc("GET /get_product/{id}", displaySingleItem)
+	mux.HandleFunc("POST /post_product/{id}", postData)
 
 	fmt.Println("Server is listening on port " + PORT_STR)
 
