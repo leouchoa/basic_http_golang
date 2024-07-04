@@ -26,11 +26,12 @@ var data = map[string]string{
 
 func helloHandler(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "Hello!")
+	w.WriteHeader(http.StatusOK)
 }
 
 func getData(w http.ResponseWriter, req *http.Request) {
-	// Sets up the Content-Type header so that the client knows to expect a JSON response
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(data)
 }
 
