@@ -8,6 +8,7 @@ import (
 )
 
 var PORT = 8080
+var PORT_STR = strconv.Itoa(PORT)
 
 type user_data struct {
 	id        uint
@@ -47,9 +48,9 @@ func main() {
 	mux.HandleFunc("/get_data/{id}", getData)
 	mux.HandleFunc("/product/{id}", displaySingleItem)
 
-	fmt.Println("Server is listening on port " + strconv.Itoa(PORT))
+	fmt.Println("Server is listening on port " + PORT_STR)
 
-	err := http.ListenAndServe(":"+strconv.Itoa(PORT), mux)
+	err := http.ListenAndServe(":"+PORT_STR, mux)
 	if err != nil {
 		fmt.Printf("Error starting server: %s\n", err)
 	}
